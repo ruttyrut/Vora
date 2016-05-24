@@ -126,7 +126,7 @@ sudo /usr/sbin/ambari-server start
 -- Create Cluster; When selecting key, use the bottom Private one 
 -- use "cluster_admin" user
 -- Install HDFS, Yarn, Zookeeper, Spark, Ambari Metrics
--- If 3 nodes (a, b & c) HDFS Datanodes to be installed on b & c and HDFS NameNode on a
+-- If 3 nodes (a, b & c) HDFS Datanodes to be installed on nodes b & c and HDFS NameNode on node a
 -- assign EVERYTHING on all slaves and clients
 
 +++++++++++++++
@@ -186,18 +186,24 @@ sudo /usr/sbin/ambari-server restart
 -- make sure all services started
 
 -- add vora service in ambari 
--- can install in any order, but best one by one;
+-- can install in any order, but best one by one, so install in following order ;
 (In our scenario, we have 3 nodes; a, b, c)
-1. vora base (all nodes)
+1. vora base (on all nodes)
+-- just a bunch of client libraries
 2. discovery server
--- Cannot have client server on same node. 
--- If 3 nodes, discovery on also 3 nodes and no client needed
--- need 3 discovery servers, so 3 nodes is official minimum
-3. dlog (all)
-4. catalog (a (master)) (need to install on node that has dlog)
-5. v2 (b & c (where datanodes are)
-6. thrift server (a)
-7. tools (a) thrift and tools on same machine
+-- Cannot have client and server on same node. 
+-- If 3 nodes, discovery on 3 nodes and no clients needed and no clients should be installed
+-- each server can act as a client
+-- cannot install client and server on same node, you will have issues, as they use the same port
+-- need 3 discovery servers, so 3 nodes is official minimum, although possible to hack and install on 1 (not supported)
+3. dlog (on all nodes)
+-- dlog is the persistency used by the catalog, so must be before catalog
+-- documentation says 5 minimu, but 3 is fine
+4. catalog (on node a (master)) (need to install on node that has dlog as it writes to dlog)
+5. v2 (on nodes b & c (where hdfs datanodes are)
+-- is reading files out of hdfs, so want to have datanodes local
+6. thrift server (on node a)
+7. tools (on node a) thrift and tools on same machine, as they talk to each other
 
 ++++++++++++++++
 + TO TEST VORA +
