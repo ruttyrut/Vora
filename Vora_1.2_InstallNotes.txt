@@ -6,7 +6,7 @@
 
 -- see Video 1 for "official" download paths from SAP Service Market Place
 -- use VORA_AM1_02_0-70001227.gz for Ambari
-wget https://www.dropbox.com/s/7f5qpdxg573sb2s/VORA_AM1_02_0-70001227.gz?dl=0 -O VORA_AM1_02_0-70001227.gz
+wget https://www.dropbox.com/s/?????????/VORA_AM1_02_0-70001227.gz?dl=0 -O VORA_AM1_02_0-70001227.gz
 
 == in AWS ==
 Create VPC 
