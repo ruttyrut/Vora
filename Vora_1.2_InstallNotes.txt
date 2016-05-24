@@ -1,0 +1,229 @@
+++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++
++++ VORA 1.2 INSTALL NOTES +++
+++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++
+
+-- see Video 1 for "official" download paths from SAP Service Market Place
+-- use VORA_AM1_02_0-70001227.gz for Ambari
+wget https://www.dropbox.com/s/7f5qpdxg573sb2s/VORA_AM1_02_0-70001227.gz?dl=0 -O VORA_AM1_02_0-70001227.gz
+
+== in AWS ==
+Create VPC 
+Create 3 Linux Nodes based on SUSE v11 SP3
+Optionally create Windows Box
+-- See videos 01 (SMP), 02 (VPC), 03 (RDP) & 04 (Nodes) in Vora 1.2 Install Series of videos
+
+-- ON ALL LINUX NODES
+sudo su -
+echo "10.0.0.??    ip-10-0-0-??.ec2.internal     ip-10-0-0-??" | tee -a /etc/hosts
+echo "10.0.0.??    ip-10-0-0-??.ec2.internal     ip-10-0-0-??" | tee -a /etc/hosts
+echo "10.0.0.??    ip-10-0-0-??.ec2.internal     ip-10-0-0-??" | tee -a /etc/hosts
+
+/etc/init.d/ntp restart
+
+--- ON MASTER LINUX NODE
+chmod 700 /etc/sudoers
+echo "%sysadmin ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
+chmod 440 /etc/sudoers
+groupadd sysadmin
+sudo /usr/sbin/useradd -m -g users -G sysadmin cluster_admin
+sudo -iu cluster_admin
+ssh-keygen -t rsa
+PRESS RETURN
+PRESS RETURN
+chmod 700 ~/
+chmod 700 ~/.ssh
+cat ~/.ssh/id_rsa.pub >~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+cat ~/.ssh/id_rsa.pub
+cat ~/.ssh/id_rsa
+-- copy to local file cluster.keys
+
+sudo /usr/sbin/useradd -m -g users vora
+sudo passwd vora
+-- enter password
+
+exit
+exit
+-- make sure you are ec2-user going forward
+id
+mkdir /home/ec2-user/media
+cd /home/ec2-user/media
+pwd
+ls
+
+wget https://www.dropbox.com/s/big19drvsxz236p/SLES11-compat-c%2B%2B.tar?dl=0 -O SLES11-compat-c++.tar
+ls
+
+mkdir /home/ec2-user/media/tmp
+tar -xf SLES11-compat-c++.tar -C tmp
+sudo zypper -n install tmp/*rpm
+
+exit
+
+-- ON SLAVE LINUX NODES
+chmod 700 /etc/sudoers
+echo "%sysadmin ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
+chmod 440 /etc/sudoers
+groupadd sysadmin
+sudo /usr/sbin/useradd -m -g users -G sysadmin cluster_admin
+sudo -iu cluster_admin
+mkdir ~/.ssh
+chmod 700 ~/.ssh
+
+echo "INSERT THE KEY HERE" > ~/.ssh/authorized_keys
+-- past in line 2 from cluster.keys
+-- like ;
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDE/dntMmsKAwtWMNRxnhAskY3Gnra5K1ecDXwpeZLMrWahfRB60lP88gWG0LsgsvkSPSzK10ucOkRqsh5QoyrajO2NvvmNz/lofC+jUCR/eGqWtoHcf2FtnvC+A3niw6VhAgycFOYFdU45amKfj3mt5kAVZtOM+wfGK+3POj7o8????????????????????????????????????64KtmOqPgtkHXaQITzgrCVBR4mLtruiolPNbkaDWhYoiXGvRSfmJQWc0D6RrV6alC7KcbiHtWfpsCykgZRmDOTFro9WPuFJTXzFmlHFYUQIZGS4/KDXr7AcKlHYBfMVSZ cluster_admin@ip-10-0-0-??" > ~/.ssh/authorized_keys
+cat ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+exit
+exit
+
+-- make sure you are ec2-user going forward
+id
+mkdir /home/ec2-user/media
+cd /home/ec2-user/media
+pwd
+ls
+
+wget https://www.dropbox.com/s/big19drvsxz236p/SLES11-compat-c%2B%2B.tar?dl=0 -O SLES11-compat-c++.tar
+ls
+
+mkdir /home/ec2-user/media/tmp
+tar -xf SLES11-compat-c++.tar -C tmp
+sudo zypper -n install tmp/*rpm
+exit
+
+-- BACK ON MASTER
+-- make sure you are cluster_admin
+sudo su -
+su - cluster_admin
+cd /etc/zypp/repos.d
+
++++++++++++++++
++   AMBARI    +
++++++++++++++++
+
+sudo wget http://public-repo-1.hortonworks.com/ambari/suse11/2.x/updates/2.2.0.0/ambari.repo -O /etc/zypp/repos.d/ambari.repo
+sudo zypper ref
+sudo zypper -n install ambari-server
+sudo /usr/sbin/ambari-server setup
+ACCEPT DEFAULTS
+sudo /usr/sbin/ambari-server start
+
+-- Open Port 8080 in CAL, but use Chrome on Windows Image
+-- show how to change admin password
+-- User HDP 2.3
+-- Create Cluster; When selecting key, use the bottom Private one 
+-- use "cluster_admin" user
+-- Install HDFS, Yarn, Zookeeper, Spark, Ambari Metrics
+-- assign EVERYTHING on all slaves and clients
+
++++++++++++++++
++  TEST HDFS  +
++++++++++++++++
+
+sudo su -
+sudo -iu hdfs
+hdfs dfs -mkdir /user/vora
+hdfs dfs -chown vora /user/vora
+exit
+-- validate with ;
+sudo -iu vora
+echo "1,2,Hello" > test.csv
+hdfs dfs -put test.csv
+hdfs dfs -cat /user/vora/test.csv
+exit
+
+++++++++++++++++
++  TEST SPARK  +
+++++++++++++++++
+
+exit
+su - vora
+id
+-- should be "vora" user
+spark-shell
+
+exit
+
+spark-submit --class org.apache.spark.examples.SparkPi --master yarn-client --num-executors 2 --driver-memory 512m --executor-memory 512m --executor-cores 2 --queue default $SPARK_HOME/lib/spark-examples*.jar 10 2>/dev/null
+
+-- should see "Pi is roughly 3.140292"
+
+++++++++++++++++
++ VORA INSTALL +
+++++++++++++++++
+
+exit
+su - ec2-user
+id
+cd /home/ec2-user/media
+ls
+
+sudo tar -xvzf VORA_AM1_02_0-70001227.gz -C /var/lib/ambari-server/resources/stacks/HDP/2.3/services
+sudo /usr/sbin/ambari-server restart
+-- make sure all services started
+
+-- add vora service in ambari as per blog/PDF
+
+++++++++++++++++
++ TO TEST VORA +
+++++++++++++++++
+
+/*
+/var/lib/ambari-agent/cache/stacks/HDP/2.3/services/vora-base/package/lib/vora-spark/bin/start-spark-shell.sh
+*/
+
+source /etc/vora/vora-env.sh
+
+$VORA_SPARK_HOME/bin/start-spark-shell.sh
+
+import org.apache.spark.sql.SapSQLContext
+
+val vc = new SapSQLContext(sc)
+
+val testsql = """
+CREATE TEMPORARY TABLE testtable (a1 int, a2 int, a3 string)
+USING com.sap.spark.vora
+OPTIONS (
+tableName "testtable",
+paths "/user/vora/test.csv"
+)"""
+
+vc.sql(testsql).show
+
+vc.sql("show tables").show
+
+vc.sql("SELECT * FROM testtable").show
+
+++++++++++++++++++
++ TO DELETE VORA +
+++++++++++++++++++
+
+-- stop all servers
+
+sudo su -
+
+su - cluster_admin
+
+curl -u admin:admin -X DELETE -H 'X-Requested-By:admin' http://localhost:8080/api/v1/clusters/SHA/services/HANA_VORA_BASE
+
+curl -u admin:admin -X DELETE -H 'X-Requested-By:admin' http://localhost:8080/api/v1/clusters/SHA/services/HANA_VORA_CATALOG
+
+curl -u admin:admin -X DELETE -H 'X-Requested-By:admin' http://localhost:8080/api/v1/clusters/SHA/services/HANA_VORA_DISCOVERY
+
+curl -u admin:admin -X DELETE -H 'X-Requested-By:admin' http://localhost:8080/api/v1/clusters/SHA/services/HANA_VORA_DLOG
+
+curl -u admin:admin -X DELETE -H 'X-Requested-By:admin' http://localhost:8080/api/v1/clusters/SHA/services/HANA_VORA_THRIFTSERVER
+
+curl -u admin:admin -X DELETE -H 'X-Requested-By:admin' http://localhost:8080/api/v1/clusters/SHA/services/HANA_VORA_TOOLS
+
+curl -u admin:admin -X DELETE -H 'X-Requested-By:admin' http://localhost:8080/api/v1/clusters/SHA/services/HANA_VORA_V2SERVER
+
+-- delete vora folders/services in ;
+/var/lib/ambari-server/resources/stacks/HDP/2.3/services
+
+sudo /usr/sbin/ambari-server restart
