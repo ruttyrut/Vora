@@ -199,11 +199,13 @@ sudo /usr/sbin/ambari-server restart
 3. dlog (on all nodes)
 -- dlog is the persistency used by the catalog, so must be before catalog
 -- documentation says 5 minimu, but 3 is fine
-4. catalog (on node a (master)) (need to install on node that has dlog as it writes to dlog)
+4. catalog (on node a (master)) 
+-- need to install on node that has dlog as it writes to dlog
 5. v2 (on nodes b & c (where hdfs datanodes are)
 -- is reading files out of hdfs, so want to have datanodes local
 6. thrift server (on node a)
-7. tools (on node a) thrift and tools on same machine, as they talk to each other
+7. tools (on node a) 
+-- thrift and tools on same machine, as they talk to each other
 
 ++++++++++++++++
 + TO TEST VORA +
