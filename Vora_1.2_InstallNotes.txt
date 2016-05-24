@@ -4,6 +4,13 @@
 ++++++++++++++++++++++++++++++
 ++++++++++++++++++++++++++++++
 
+/*
+-- Useful Resources --
+http://help.sap.com/Download/Multimedia/hana_vora/SAP_HANA_Vora_Installation_Admin_Guide_en.pdf
+http://scn.sap.com/community/hana-in-memory/blog/2016/04/25/vora-12-installation-cheat-sheet
+http://scn.sap.com/blogs/vora/2015/12/09/sap-hana-vora--troubleshooting
+*/
+
 -- see Video 1 for "official" download paths from SAP Service Market Place
 -- use VORA_AM1_02_0-70001227.gz for Ambari
 wget https://www.dropbox.com/s/?????????/VORA_AM1_02_0-70001227.gz?dl=0 -O VORA_AM1_02_0-70001227.gz
@@ -119,6 +126,7 @@ sudo /usr/sbin/ambari-server start
 -- Create Cluster; When selecting key, use the bottom Private one 
 -- use "cluster_admin" user
 -- Install HDFS, Yarn, Zookeeper, Spark, Ambari Metrics
+-- If 3 nodes (a, b & c) HDFS Datanodes to be installed on b & c and HDFS NameNode on a
 -- assign EVERYTHING on all slaves and clients
 
 +++++++++++++++
@@ -136,6 +144,16 @@ echo "1,2,Hello" > test.csv
 hdfs dfs -put test.csv
 hdfs dfs -cat /user/vora/test.csv
 exit
+
+++++++++++++++++
++ SETUP SPARK  +
+++++++++++++++++
+
+su - vora
+id
+sudo vi $SPARK_HOME/conf/spark-defaults.conf
+-- add the following 
+spark.master yarn-client
 
 ++++++++++++++++
 +  TEST SPARK  +
@@ -167,7 +185,19 @@ sudo tar -xvzf VORA_AM1_02_0-70001227.gz -C /var/lib/ambari-server/resources/sta
 sudo /usr/sbin/ambari-server restart
 -- make sure all services started
 
--- add vora service in ambari as per blog/PDF
+-- add vora service in ambari 
+-- can install in any order, but best one by one;
+(In our scenario, we have 3 nodes; a, b, c)
+1. vora base (all nodes)
+2. discovery server
+-- Cannot have client server on same node. 
+-- If 3 nodes, discovery on also 3 nodes and no client needed
+-- need 3 discovery servers, so 3 nodes is official minimum
+3. dlog (all)
+4. catalog (a (master)) (need to install on node that has dlog)
+5. v2 (b & c (where datanodes are)
+6. thrift server (a)
+7. tools (a) thrift and tools on same machine
 
 ++++++++++++++++
 + TO TEST VORA +
