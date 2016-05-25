@@ -155,7 +155,7 @@ exit
 
 su - vora
 id
-sudo vi $SPARK_HOME/conf/spark-defaults.conf
+sudo vi /usr/hdp/2.3.4.7-4/spark/conf/spark-defaults.conf
 -- add the following which means spark won't run on local mode (ie. on this machine only)
 spark.master yarn-client
 
