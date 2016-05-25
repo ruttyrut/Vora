@@ -170,11 +170,9 @@ su - vora
 id
 -- should be "vora" user
 spark-shell
-
 exit
-
-spark-submit --class org.apache.spark.examples.SparkPi --master yarn-client --num-executors 2 --driver-memory 512m --executor-memory 512m --executor-cores 2 --queue default $SPARK_HOME/lib/spark-examples*.jar 10 2>/dev/null
-
+-- run following out of spark (with the vora user prompt) to test spark ;
+spark-submit --class org.apache.spark.examples.SparkPi --master yarn-client --num-executors 2 --driver-memory 512m --executor-memory 512m --executor-cores 2 --queue default /usr/hdp/2.3.4.7-4/spark/lib/spark-examples*.jar 10 2>/dev/null
 -- should see "Pi is roughly 3.140292"
 
 ++++++++++++++++
