@@ -187,7 +187,11 @@ ls
 
 sudo tar -xvzf VORA_AM1_02_0-70001227.gz -C /var/lib/ambari-server/resources/stacks/HDP/2.3/services
 sudo /usr/sbin/ambari-server restart
--- make sure all services started
+-- make sure all services started. If they haven't, or you see an orange circle with an explanation mark, then run ;
+sudo su -
+sudo - cluster_admin/vora
+sudo /usr/sbin/ambari-agent restart
+-- on EACH of your 3 nodes (you can use the vora or cluster_admin user)
 
 -- add vora service in ambari 
 -- can install in any order, but best one by one, so install in following order ;
