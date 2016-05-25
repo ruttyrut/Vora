@@ -153,8 +153,10 @@ exit
 + SETUP SPARK  +
 ++++++++++++++++
 
-su - vora
+exit
 id
+-- should be ec2-user
+ls /usr/hdp/2.3.4.7-4/spark/conf/
 sudo vi /usr/hdp/2.3.4.7-4/spark/conf/spark-defaults.conf
 -- add the following which means spark won't run on local mode (ie. on this machine only)
 spark.master yarn-client
