@@ -47,10 +47,6 @@ cat ~/.ssh/id_rsa.pub
 cat ~/.ssh/id_rsa
 -- copy to local file cluster.keys
 
-sudo /usr/sbin/useradd -m -g users vora
-sudo passwd vora
--- enter password
-
 exit
 exit
 -- make sure you are ec2-user going forward
@@ -103,15 +99,23 @@ tar -xf SLES11-compat-c++.tar -C tmp
 sudo zypper -n install tmp/*rpm
 exit
 
--- BACK ON MASTER
--- make sure you are cluster_admin
-sudo su -
-su - cluster_admin
-cd /etc/zypp/repos.d
-
 +++++++++++++++
 +   AMBARI    +
 +++++++++++++++
+
+-- BACK ON MASTER
+
+sudo su -
+sudo /usr/sbin/useradd -m -g users vora
+sudo passwd vora
+-- enter password
+exit
+
+-- make sure you are cluster_admin
+sudo su -
+su - cluster_admin
+id
+cd /etc/zypp/repos.d
 
 sudo wget http://public-repo-1.hortonworks.com/ambari/suse11/2.x/updates/2.2.0.0/ambari.repo -O /etc/zypp/repos.d/ambari.repo
 sudo zypper ref
