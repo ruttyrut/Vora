@@ -196,7 +196,7 @@ sudo /usr/sbin/ambari-agent restart
 -- add vora service in ambari 
 -- can install in any order, but best one by one, so install in following order ;
 (In our scenario, we have 3 nodes; a, b, c)
-1. vora base (on all nodes)
+1. vora base (install client on all nodes)
 -- just a bunch of client libraries
 2. discovery server
 -- Cannot have client and server on same node. 
@@ -204,14 +204,25 @@ sudo /usr/sbin/ambari-agent restart
 -- each server can act as a client
 -- cannot install client and server on same node, you will have issues, as they use the same port
 -- need 3 discovery servers, so 3 nodes is official minimum, although possible to hack and install on 1 (not supported)
+-- Vora discovery servers need extra configurations:
+---- in vora_discovery_bootstrap add the master DNS (a)
+---- in vora_discovery_servers add your server DNSs (a, b, c)
 3. dlog (on all nodes)
 -- dlog is the persistency used by the catalog, so must be before catalog
 -- documentation says 5 minimu, but 3 is fine
+-- Install DLOG servers on the same machines as Discovery Servers
 4. catalog (on node a (master)) 
 -- need to install on node that has dlog as it writes to dlog
 5. v2 (on nodes b & c (where hdfs datanodes are)
 -- is reading files out of hdfs, so want to have datanodes local
 6. thrift server (on node a)
+- have to add more configurations to the thrift server as below:
+- on Vora Node 1, do ;
+ls /usr/lib/jvm/java
+- add vora_thriftserver_java_home = /usr/lib/jvm/java --this value depends on where JAVA installed on your system
+- on Vora Node 1, do ;
+ls /usr/hdp/2.3.4.0-3485/spark
+- add vora_thriftserver_spark_home =  /usr/hdp/2.3.4.0-3485/spark --this is your Spark Home value
 7. tools (on node a) 
 -- thrift and tools on same machine, as they talk to each other
 
