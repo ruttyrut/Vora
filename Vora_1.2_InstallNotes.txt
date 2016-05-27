@@ -206,7 +206,9 @@ sudo /usr/sbin/ambari-agent restart
 -- need 3 discovery servers, so 3 nodes is official minimum, although possible to hack and install on 1 (not supported)
 -- Vora discovery servers need extra configurations:
 ---- in vora_discovery_bootstrap add the master DNS (a)
+---- add the public dns, not the private one of node a
 ---- in vora_discovery_servers add your server DNSs (a, b, c)
+---- add the public dns, not the private one of nodes a, b, c
 3. dlog (on all nodes)
 -- dlog is the persistency used by the catalog, so must be before catalog
 -- documentation says 5 minimu, but 3 is fine
