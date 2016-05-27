@@ -221,10 +221,10 @@ sudo /usr/sbin/ambari-agent restart
 - have to add more configurations to the thrift server as below:
 - on Vora Node 1, do ;
 ls /usr/jdk64/jdk1.8.0_60
-- add vora_thriftserver_java_home = /usr/lib/jvm/java --this value depends on where JAVA installed on your system
+- add vora_thriftserver_java_home = /usr/jdk64/jdk1.8.0_60 --this value depends on where JAVA installed on your system
 - on Vora Node 1, do ;
 ls /usr/hdp/2.3.4.7-4/spark
-- add vora_thriftserver_spark_home =  /usr/hdp/2.3.4.0-3485/spark --this is your Spark Home value
+- add vora_thriftserver_spark_home =  /usr/hdp/2.3.4.7-4/spark --this is your Spark Home value
 7. tools (on node a) 
 -- thrift and tools on same machine, as they talk to each other
 
