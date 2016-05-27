@@ -256,7 +256,9 @@ vc.sql(testsql).show
 
 vc.sql("show tables").show
 
-vc.sql("SELECT * FROM testtable").show
+vc.sql("describe testtable").show
+
+vc.sql("select * from testtable").show
 
 ++++++++++++++++++
 + TO DELETE VORA +
