@@ -270,6 +270,9 @@ sudo su -
 
 su - cluster_admin
 
+-- note that for the following admin:admin is the login and password for ambari, 
+-- so you may need to change admin to your changed password
+
 curl -u admin:admin -X DELETE -H 'X-Requested-By:admin' http://localhost:8080/api/v1/clusters/SHA/services/HANA_VORA_BASE
 
 curl -u admin:admin -X DELETE -H 'X-Requested-By:admin' http://localhost:8080/api/v1/clusters/SHA/services/HANA_VORA_CATALOG
@@ -284,7 +287,10 @@ curl -u admin:admin -X DELETE -H 'X-Requested-By:admin' http://localhost:8080/ap
 
 curl -u admin:admin -X DELETE -H 'X-Requested-By:admin' http://localhost:8080/api/v1/clusters/SHA/services/HANA_VORA_V2SERVER
 
--- delete vora folders/services in ;
+-- delete vora folders/services on Vora Node 1 in ;
 /var/lib/ambari-server/resources/stacks/HDP/2.3/services
+
+-- delete vora logs (on all nodes) in ;
+rm -rf /var/log/vora*
 
 sudo /usr/sbin/ambari-server restart
