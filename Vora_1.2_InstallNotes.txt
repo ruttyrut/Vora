@@ -292,6 +292,6 @@ curl -u admin:admin -X DELETE -H 'X-Requested-By:admin' http://localhost:8080/ap
 /var/lib/ambari-server/resources/stacks/HDP/2.3/services
 
 -- delete vora logs (on all nodes) in ;
-rm -rf /var/log/vora*
+sudo rm -rf /var/log/vora*
 
 sudo /usr/sbin/ambari-server restart
