@@ -165,7 +165,7 @@ spark.master yarn-client
 +  TEST SPARK  +
 ++++++++++++++++
 
-exit
+sudo su -
 su - vora
 id
 -- should be "vora" user
