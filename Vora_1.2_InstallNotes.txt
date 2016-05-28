@@ -232,9 +232,10 @@ ls /usr/hdp/2.3.4.7-4/spark
 + TO TEST VORA +
 ++++++++++++++++
 
-/*
-/var/lib/ambari-agent/cache/stacks/HDP/2.3/services/vora-base/package/lib/vora-spark/bin/start-spark-shell.sh
-*/
+sudo su -
+su - vora
+id
+-- should be vora user
 
 source /etc/vora/vora-env.sh
 
