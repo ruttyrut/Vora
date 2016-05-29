@@ -293,15 +293,15 @@ sudo rm -rf /var/lib/ambari-server/resources/stacks/HDP/2.3/services/vora*
 sudo rm -rf /home/vora/metastore_db
 sudo rm -rf /home/vora/derby.log
 
--- delete vora logs (on all nodes) in ;
+-- delete vora logs (to be run on all nodes) in ;
 sudo rm -rf /var/log/vora*
 
--- delete vora content (on all nodes) in ;
+-- delete vora content (to be run on all nodes) in ;
 sudo rm -rf /etc/vora/
 
 sudo /usr/sbin/ambari-server restart
 
--- IF YOU REALLY WANT TO DELETE ALL OBJECTS FROM ZOOKEEPER, RUN BELOW
+-- delete zookeeper cache (to be run on all nodes) in ;
 zookeeper-client
 ls /
 rmr /com
