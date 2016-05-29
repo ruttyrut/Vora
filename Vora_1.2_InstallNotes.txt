@@ -11,10 +11,6 @@ http://scn.sap.com/community/hana-in-memory/blog/2016/04/25/vora-12-installation
 http://scn.sap.com/blogs/vora/2015/12/09/sap-hana-vora--troubleshooting
 */
 
--- see Video 1 for "official" download paths from SAP Service Market Place
--- use VORA_AM1_02_0-70001227.gz for Ambari
-wget https://www.dropbox.com/s/?????????/VORA_AM1_02_0-70001227.gz?dl=0 -O VORA_AM1_02_0-70001227.gz
-
 == in AWS ==
 Create VPC 
 Create 3 Linux Nodes based on SUSE v11 SP3
@@ -185,6 +181,10 @@ id
 cd /home/ec2-user/media
 ls
 
+-- see Video 1 for "official" download paths from SAP Service Market Place
+-- use VORA_AM1_02_0-70001227.gz for Ambari
+wget https://www.dropbox.com/s/?????????/VORA_AM1_02_0-70001227.gz?dl=0 -O VORA_AM1_02_0-70001227.gz
+
 sudo tar -xvzf VORA_AM1_02_0-70001227.gz -C /var/lib/ambari-server/resources/stacks/HDP/2.3/services
 sudo /usr/sbin/ambari-server restart
 -- make sure all services started. If they haven't, or you see an orange circle with an explanation mark, then run ;
@@ -246,7 +246,7 @@ import org.apache.spark.sql.SapSQLContext
 val vc = new SapSQLContext(sc)
 
 val testsql = """
-CREATE TEMPORARY TABLE testtable (a1 int, a2 int, a3 string)
+CREATE TABLE testtable (a1 int, a2 int, a3 string)
 USING com.sap.spark.vora
 OPTIONS (
 tableName "testtable",
