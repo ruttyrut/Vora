@@ -289,7 +289,7 @@ curl -u admin:admin -X DELETE -H 'X-Requested-By:admin' http://localhost:8080/ap
 curl -u admin:admin -X DELETE -H 'X-Requested-By:admin' http://localhost:8080/api/v1/clusters/SHA/services/HANA_VORA_V2SERVER
 
 -- delete vora folders/services on Vora Node 1 in ;
-/var/lib/ambari-server/resources/stacks/HDP/2.3/services
+sudo rm -rf /var/lib/ambari-server/resources/stacks/HDP/2.3/services/vora*
 
 -- delete vora logs (on all nodes) in ;
 sudo rm -rf /var/log/vora*
