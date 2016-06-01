@@ -47,14 +47,17 @@ exit
 exit
 -- make sure you are ec2-user going forward
 id
+-- the following folder on Vora Node 1 will contain the Vora Install files from SMP.
 mkdir /home/ec2-user/media
 cd /home/ec2-user/media
 pwd
 ls
 
+-- Instead of running the next ~7 lines of scripts, you can instead run 
+-- : "zypper install libgcc_s1 libstdc++6" as per the Install Guide.
+
 wget https://www.dropbox.com/s/big19drvsxz236p/SLES11-compat-c%2B%2B.tar?dl=0 -O SLES11-compat-c++.tar
 ls
-
 mkdir /home/ec2-user/media/tmp
 tar -xf SLES11-compat-c++.tar -C tmp
 sudo zypper -n install tmp/*rpm
@@ -79,6 +82,10 @@ cat ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
 exit
 exit
+
+-- Instead of running the next ~15 lines of scripts, you can instead run 
+-- : "zypper install libgcc_s1 libstdc++6" as per the Install Guide.
+-- You don't need the /home/ec2-user/media folder if you run the above command on Vora Node 2 and Vora Node 3.
 
 -- make sure you are ec2-user going forward
 id
