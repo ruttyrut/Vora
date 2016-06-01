@@ -298,12 +298,6 @@ sudo rm -rf /var/log/vora*
 
 -- delete vora content (to be run on all nodes) in ;
 sudo rm -rf /etc/vora/
+sudo rm -rf /var/local/vora*
 
 sudo /usr/sbin/ambari-server restart
-
--- delete zookeeper cache (to be run on all nodes) in ;
-zookeeper-client
-ls /
-rmr /com
-ls /
-quit
