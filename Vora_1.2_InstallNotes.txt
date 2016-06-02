@@ -156,13 +156,9 @@ exit
 + SETUP SPARK  +
 ++++++++++++++++
 
-exit
-id
--- should be ec2-user
-ls /usr/hdp/2.3.4.7-4/spark/conf/
-sudo vi /usr/hdp/2.3.4.7-4/spark/conf/spark-defaults.conf
--- add the following which means spark won't run on local mode (ie. on this machine only)
+-- add the following as a "Custom spark-defaults" in the "Configs" tab in Ambari for the Spark service
 spark.master yarn-client
+-- it means spark won't run on local mode (ie. on this machine only) but will use yarn (on all nodes) instead
 
 ++++++++++++++++
 +  TEST SPARK  +
