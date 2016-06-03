@@ -1,0 +1,40 @@
+-- in HDFS
+sudo -iu vora
+
+hdfs dfs -rm /user/vora/facts.csv
+rm facts.csv
+hdfs dfs -rm /user/vora/dims.csv
+rm dims.csv
+
+echo "1,20" >> facts.csv
+echo "2,18" >> facts.csv
+cat facts.csv
+echo "1,United" >> dims.csv
+echo "2,Liverpool" >> dims.csv
+cat dims.csv
+
+hdfs dfs -ls /user/vora/
+hdfs dfs -put facts.csv
+hdfs dfs -put dims.csv
+hdfs dfs -ls /user/vora/
+hdfs dfs -cat /user/vora/facts.csv
+hdfs dfs -cat /user/vora/dims.csv
+
+-- In OLAP Modeller
+DROP TABLE FACTS
+DROP TABLE DIMS
+
+CREATE TABLE FACTS (ID int, TROPHIES int)
+USING com.sap.spark.vora
+OPTIONS (tableName "FACTS",
+paths "/user/vora/facts.csv")
+
+CREATE TABLE DIMS (ID int, CLUB string)
+USING com.sap.spark.vora
+OPTIONS (tableName "DIMS",
+paths "/user/vora/dims.csv")
+
+SELECT * FROM FACTS
+
+SELECT * FROM DIMS
+
