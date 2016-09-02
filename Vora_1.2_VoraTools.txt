@@ -61,7 +61,7 @@ hdfs dfs -ls /user/vora/
 hdfs dfs -cat /user/vora/facts.csv
 hdfs dfs -cat /user/vora/dims.csv
 
--- In OLAP Modeller
+-- In Vora Modeller
 DROP TABLE FACTS;
 CREATE TABLE FACTS (ID int, TROPHIES string)
 USING com.sap.spark.vora
@@ -74,7 +74,7 @@ DROP TABLE DIMS;
 CREATE TABLE DIMS (ID int, CLUB string)
 USING com.sap.spark.vora
 OPTIONS (tableName "DIMS",
-paths "/user/vora/dims.csv")
+paths "/user/vora/dims.csv");
 
 SELECT * FROM DIMS;
 
