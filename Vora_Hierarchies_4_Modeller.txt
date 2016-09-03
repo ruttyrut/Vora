@@ -1,4 +1,14 @@
+#####################################
+# VORA HIERARCHIES USING VORA TOOLS #
+#####################################
+
 su - vora
+
+rm addresses.csv
+rm hierarchy.csv
+
+hdfs dfs -rm /user/vora/hierarchy.csv
+hdfs dfs -rm /user/vora/addresses.csv
 
 ## id, name, pred, succ, ord
 echo "1,Diane,0,1,1" >> hierarchy.csv
@@ -9,6 +19,7 @@ echo "5,Jamie,3,5,2" >> hierarchy.csv
 echo "6,Julie,3,6,3" >> hierarchy.csv
 echo "7,Bob,3,7,4" >> hierarchy.csv
 echo "8,Phil,3,8,5" >> hierarchy.csv
+echo "9,Tom,3,9,6" >> hierarchy.csv
 
 echo "1,Philly" >> addresses.csv
 echo "2,Palo Alto" >> addresses.csv
@@ -26,70 +37,112 @@ hdfs dfs -ls /user/vora/
 hdfs dfs -cat /user/vora/hierarchy.csv
 hdfs dfs -cat /user/vora/addresses.csv
 
-CREATE TEMPORARY TABLE hierarchy_table
-(id INTEGER, name VARCHAR(200), pred INTEGER, succ INTEGER, ord INTEGER) 
-USING com.sap.spark.vora 
-OPTIONS (paths "/user/vora/hierarchy.csv");
+drop table hierarchy_table;
+create table hierarchy_table
+(id integer, name varchar(200), pred integer, succ integer, ord integer) 
+using com.sap.spark.vora 
+options (paths "/user/vora/hierarchy.csv");
 
 select * from hierarchy_table;
 
-// create addresses table (to showcase hierarchy joins with regular relations)
-CREATE TEMPORARY TABLE addresses
-(id INTEGER, address VARCHAR(200)) 
-USING com.sap.spark.vora 
-OPTIONS (paths "/user/vora/addresses.csv");
+create temporary table addresses
+(id integer, address varchar(200)) 
+using com.sap.spark.vora 
+options (paths "/user/vora/addresses.csv");
 
 select * from addresses;
 
-show tables;
+select name, is_root(node) from hierarchy (
+using hierarchy_table as v
+join prior u on v.pred = u.succ
+order siblings by ord asc
+start where pred = 0
+set node
+) as h;
 
-// create view of hierarchy
-CREATE VIEW HV AS SELECT * FROM HIERARCHY (USING hierarchy_table AS v JOIN PARENT u ON v.pred = u.succ START WHERE pred = 0 SET Node) AS H");
+select name, level(node) as level from hierarchy (
+using hierarchy_table as v
+join prior u on v.pred = u.succ
+order siblings by ord asc
+start where pred = 0
+set node)
+as h;
 
-show tables;
+select b.id, b.name, a.address, b.level
+from
+(select id, name, level(node) as level from hierarchy (
+using hierarchy_table as v
+join prior u on v.pred = u.succ
+order siblings by ord asc
+start where pred = 0
+set node)
+as h) b, addresses a
+where b.id = a.id;
+
+-- not working ...
+select a.id, a.name, b.address, a.level
+from
+(select id, name, level(node) as level from hierarchy 
+(using hierarchy_table as v
+join prior u on v.pred = u.succ
+order siblings by ord asc
+start where pred = 0
+set node)
+as h) a left outer join addresses b
+on a.id = b.id
+order by id desc;
+
+drop view hv cascade;
+create view hv as select id, name, node from hierarchy 
+(using hierarchy_table as v
+join prior u on v.pred = u.succ
+order siblings by ord asc
+start where pred = 0
+set node)
+as h;
 
 select * from hierarchy_table;
 
-select * from HV;
+select * from hv;
 
-SELECT name, IS_ROOT(Node) FROM HV;
+select name, is_root(node) from hv;
 
-SELECT name, IS_ROOT(Node) FROM HV WHERE IS_ROOT(Node) = true;
+select name, is_root(node) from hv where is_root(node) = true;
 
-// Hierarchy self-join to get children
-SELECT A.name, B.name FROM HV A, HV B WHERE IS_CHILD(A.Node, B.Node);
+# hierarchy self-join to get children
+select a.name, b.name from hv a, hv b where is_child(a.node, b.node);
 
-// Hierarchy self-join to get parent
-SELECT A.name, B.name FROM HV A, HV B WHERE IS_PARENT(A.Node, B.Node);
+# hierarchy self-join to get parent
+select a.name, b.name from hv a, hv b where is_parent(a.node, b.node);
 
-// Hierarchy self-join to get sibling
-SELECT A.name, B.name FROM HV A, HV B WHERE IS_SIBLING(A.Node, B.Node);
+# hierarchy self-join to get sibling
+select a.name, b.name from hv a, hv b where is_sibling(a.node, b.node);
 
-// Hierarchy self-join to get descendant
-SELECT A.name, B.name FROM HV A, HV B WHERE IS_DESCENDANT(A.Node, B.Node);
+# hierarchy self-join to get descendant
+select a.name, b.name from hv a, hv b where is_descendant(a.node, b.node);
 
-// Hierarchy self-join to get ancestor
-SELECT A.name, B.name FROM HV A, HV B WHERE IS_ANCESTOR(A.Node, B.Node);
+# hierarchy self-join to get ancestor
+select a.name, b.name from hv a, hv b where is_ancestor(a.node, b.node);
 
-// Hierarchy self-join to get following
-SELECT A.name, B.name FROM HV A, HV B WHERE IS_FOLLOWING(A.Node, B.Node);
+# hierarchy self-join to get following
+select a.name, b.name from hv a, hv b where is_following(a.node, b.node);
 
-// Hierarchy self-join to get preceding
-SELECT A.name, B.name FROM HV A, HV B WHERE IS_PRECEDING(A.Node, B.Node);
+# hierarchy self-join to get preceding
+select a.name, b.name from hv a, hv b where is_preceding(a.node, b.node);
 
 select * from addresses;
 
-// Simple join of hierarchy view with another table
-SELECT A.name, B.address FROM HV A, addresses B WHERE A.id = B.id;
+# simple join of hierarchy view with another table
+select a.name, b.address from hv a, addresses b where a.id = b.id;
 
-// Get ids of the children of the root.
-SELECT HV2.id as child FROM HV HV1, HV HV2 WHERE IS_CHILD(HV2.Node, HV1.Node) AND IS_ROOT(HV1.Node);
+# get ids of the children of the root.
+select hv2.id as child from hv hv1, hv hv2 where is_child(hv2.node, hv1.node) and is_root(hv1.node);
 
-// Get addresses of the children of the root.
-SELECT B.address FROM (SELECT HV2.id as child FROM HV HV1, HV HV2 WHERE IS_CHILD(HV2.Node, HV1.Node) AND IS_ROOT(HV1.Node)) A, addresses B WHERE A.child = B.id;
+# get addresses of the children of the root.
+select b.address from (select hv2.id as child from hv hv1, hv hv2 where is_child(hv2.node, hv1.node) and is_root(hv1.node)) a, addresses b where a.child = b.id;
 
-// Get names and addresses of 2nd level employees
-SELECT A.name, B.address FROM HV A, addresses B WHERE A.id = B.id AND LEVEL(A.Node) = 2;
+# get names and addresses of 2nd level employees
+select a.name, b.address from hv a, addresses b where a.id = b.id and level(a.node) = 2;
 
-// Get names and addresses of 3rd level employees
-SELECT A.name, B.address FROM HV A, addresses B WHERE A.id = B.id AND LEVEL(A.Node) = 3;
+# get names and addresses of 3rd level employees
+select a.name, b.address from hv a, addresses b where a.id = b.id and level(a.node) = 3;
