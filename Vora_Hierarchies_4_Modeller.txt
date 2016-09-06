@@ -19,7 +19,6 @@ echo "5,Jamie,3,5,2" >> hierarchy.csv
 echo "6,Julie,3,6,3" >> hierarchy.csv
 echo "7,Bob,3,7,4" >> hierarchy.csv
 echo "8,Phil,3,8,5" >> hierarchy.csv
-echo "9,Tom,3,9,6" >> hierarchy.csv
 
 echo "1,Philly" >> addresses.csv
 echo "2,Palo Alto" >> addresses.csv
@@ -78,19 +77,6 @@ start where pred = 0
 set node)
 as h) b, addresses a
 where b.id = a.id;
-
--- not working ...
-select a.id, a.name, b.address, a.level
-from
-(select id, name, level(node) as level from hierarchy 
-(using hierarchy_table as v
-join prior u on v.pred = u.succ
-order siblings by ord asc
-start where pred = 0
-set node)
-as h) a left outer join addresses b
-on a.id = b.id
-order by id desc;
 
 drop view hv cascade;
 create view hv as select id, name, node from hierarchy 
