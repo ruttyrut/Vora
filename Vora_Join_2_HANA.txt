@@ -1,0 +1,47 @@
++++++++++++++++
++ VORA & HANA +
++++++++++++++++
+
+-- run in hana as devuser
+drop table more_dims;
+create table more_dims
+(
+id integer, 
+club varchar(10)
+)
+;
+
+insert into more_dims
+values (4,'leicester');
+
+select * from more_dims;
+
+-- run in vora
+show tables;
+
+show tables 
+using com.sap.spark.hana
+options 
+(
+host "??.??.??.??",
+instance "00",
+user "DEVUSER",
+passwd "SHALive1",
+dbschema "DEVUSER"
+);
+
+register all tables
+using com.sap.spark.hana
+options 
+(
+host "52.??.??.??",
+instance "00",
+user "DEVUSER",
+passwd "SHALive1",
+dbschema "DEVUSER"
+);
+
+select * from dims
+union
+select * from more_dims
+order by id;
