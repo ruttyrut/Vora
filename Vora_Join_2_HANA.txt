@@ -12,18 +12,20 @@ club varchar(10)
 ;
 
 insert into more_dims
-values (4,'leicester');
+values (4,'Leicester');
 
 select * from more_dims;
 
 -- run in vora
-show tables;
+-- register dims table 
+
+select * from dims;
 
 show tables 
 using com.sap.spark.hana
 options 
 (
-host "??.??.??.??",
+host "52.207.6.83",
 instance "00",
 user "DEVUSER",
 passwd "SHALive1",
@@ -34,14 +36,15 @@ register all tables
 using com.sap.spark.hana
 options 
 (
-host "52.??.??.??",
+host "52.207.6.83",
 instance "00",
 user "DEVUSER",
 passwd "SHALive1",
 dbschema "DEVUSER"
 );
 
+show tables; 
+
 select * from dims
 union
-select * from more_dims
-order by id;
+select * from more_dims;
