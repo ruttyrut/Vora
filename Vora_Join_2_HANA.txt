@@ -2,6 +2,11 @@
 + VORA & HANA +
 +++++++++++++++
 
+-- run in vora
+-- register dims table 
+
+select * from dims;
+
 -- run in hana as devuser
 drop table more_dims;
 create table more_dims
@@ -18,8 +23,6 @@ select * from more_dims;
 
 -- run in vora
 -- register dims table 
-
-select * from dims;
 
 show tables 
 using com.sap.spark.hana
