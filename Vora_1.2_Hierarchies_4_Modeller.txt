@@ -60,7 +60,12 @@ paths "/user/vora/addresses.csv"
 
 select * from addresses;
 
-CREATE VIEW HV AS SELECT * FROM HIERARCHY (USING hierarchy_table AS v JOIN PARENT u ON v.pred = u.succ START WHERE pred = 0 SET Node) AS H;
+DROP VIEW HV;
+
+CREATE VIEW HV AS SELECT * FROM HIERARCHY 
+(USING hierarchy_table AS v JOIN PARENT u 
+ON v.pred = u.succ START WHERE pred = 0 SET Node) 
+AS H;
 
 show tables;
 
