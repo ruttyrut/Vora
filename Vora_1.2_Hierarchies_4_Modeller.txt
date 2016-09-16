@@ -30,8 +30,8 @@ echo "7,New York" >> addresses.csv
 echo "8,Paris" >> addresses.csv
 
 hdfs dfs -ls /user/vora/
-hdfs dfs -put /home/vora/hierarchy.csv
-hdfs dfs -put /home/vora/addresses.csv
+hdfs dfs -put hierarchy.csv
+hdfs dfs -put addresses.csv
 hdfs dfs -ls /user/vora/
 hdfs dfs -cat /user/vora/hierarchy.csv
 hdfs dfs -cat /user/vora/addresses.csv
