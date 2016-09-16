@@ -2,7 +2,7 @@
 # VORA HIERARCHIES USING VORA TOOLS #
 #####################################
 
-su - vora
+sudo -iu vora
 
 rm addresses.csv
 rm hierarchy.csv
