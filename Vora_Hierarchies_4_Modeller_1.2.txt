@@ -51,3 +51,54 @@ using com.sap.spark.vora
 options (paths "/user/vora/addresses.csv");
 
 select * from addresses;
+
+CREATE VIEW HV AS SELECT * FROM HIERARCHY (USING hierarchy_table AS v JOIN PARENT u ON v.pred = u.succ START WHERE pred = 0 SET Node) AS H;
+
+show tables;
+
+select * from hierarchy_table;
+
+select * from HV;
+
+// minimal hierarchy query
+SELECT name, IS_ROOT(Node) FROM HV;
+
+SELECT name, IS_ROOT(Node) FROM HV WHERE IS_ROOT(Node) = true;
+
+// Hierarchy self-join to get children
+SELECT A.name, B.name FROM HV A, HV B WHERE IS_CHILD(A.Node, B.Node);
+
+// Hierarchy self-join to get parent
+SELECT A.name, B.name FROM HV A, HV B WHERE IS_PARENT(A.Node, B.Node);
+
+// Hierarchy self-join to get sibling
+SELECT A.name, B.name FROM HV A, HV B WHERE IS_SIBLING(A.Node, B.Node);
+
+// Hierarchy self-join to get descendant
+SELECT A.name, B.name FROM HV A, HV B WHERE IS_DESCENDANT(A.Node, B.Node);
+
+// Hierarchy self-join to get ancestor
+SELECT A.name, B.name FROM HV A, HV B WHERE IS_ANCESTOR(A.Node, B.Node);
+
+// Hierarchy self-join to get following
+SELECT A.name, B.name FROM HV A, HV B WHERE IS_FOLLOWING(A.Node, B.Node);
+
+// Hierarchy self-join to get preceding
+SELECT A.name, B.name FROM HV A, HV B WHERE IS_PRECEDING(A.Node, B.Node);
+
+select * from addresses;
+
+// Simple join of hierarchy view with another table
+SELECT A.name, B.address FROM HV A, addresses B WHERE A.id = B.id;
+
+// Get ids of the children of the root.
+SELECT HV2.id as child FROM HV HV1, HV HV2 WHERE IS_CHILD(HV2.Node, HV1.Node) AND IS_ROOT(HV1.Node);
+
+// Get addresses of the children of the root.
+SELECT B.address FROM (SELECT HV2.id as child FROM HV HV1, HV HV2 WHERE IS_CHILD(HV2.Node, HV1.Node) AND IS_ROOT(HV1.Node)) A, addresses B WHERE A.child = B.id;
+
+// Get names and addresses of 2nd level employees
+SELECT A.name, B.address FROM HV A, addresses B WHERE A.id = B.id AND LEVEL(A.Node) = 2;
+
+// Get names and addresses of 3rd level employees
+SELECT A.name, B.address FROM HV A, addresses B WHERE A.id = B.id AND LEVEL(A.Node) = 3;
