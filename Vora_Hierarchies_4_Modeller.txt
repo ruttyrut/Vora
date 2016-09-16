@@ -44,6 +44,7 @@ options (paths "/user/vora/hierarchy.csv");
 
 select * from hierarchy_table;
 
+drop table addresses;
 create temporary table addresses
 (id integer, address varchar(200)) 
 using com.sap.spark.vora 
