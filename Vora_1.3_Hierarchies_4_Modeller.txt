@@ -19,7 +19,7 @@ echo "5,Jamie,3,5,2" >> hierarchy.csv
 echo "6,Julie,3,6,3" >> hierarchy.csv
 echo "7,Bob,3,7,4" >> hierarchy.csv
 echo "8,Phil,3,8,5" >> hierarchy.csv
-
+ 
 echo "1,Philly" >> addresses.csv
 echo "2,Palo Alto" >> addresses.csv
 echo "3,San Francisco" >> addresses.csv
