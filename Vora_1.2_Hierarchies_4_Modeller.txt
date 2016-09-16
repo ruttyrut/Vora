@@ -40,7 +40,11 @@ drop table hierarchy_table;
 create table hierarchy_table
 (id integer, name varchar(200), pred integer, succ integer, ord integer) 
 using com.sap.spark.vora 
-options (paths "/user/vora/hierarchy.csv");
+options 
+(
+tablename "hierarchy_table",
+paths "/user/vora/hierarchy.csv"
+);
 
 select * from hierarchy_table;
 
@@ -48,7 +52,11 @@ drop table addresses;
 create temporary table addresses
 (id integer, address varchar(200)) 
 using com.sap.spark.vora 
-options (paths "/user/vora/addresses.csv");
+options 
+(
+tablename "addresses",
+paths "/user/vora/addresses.csv"
+);
 
 select * from addresses;
 
