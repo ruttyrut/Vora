@@ -107,7 +107,9 @@ select a.name, b.address from hv a, addresses b where a.id = b.id;
 select hv2.id as child from hv hv1, hv hv2 where is_child(hv2.node, hv1.node) and is_root(hv1.node);
 
 // get addresses of the children of the root.
-select b.address from (select hv2.id as child from hv hv1, hv hv2 where is_child(hv2.node, hv1.node) and is_root(hv1.node)) a, addresses b where a.child = b.id;
+select b.address from (select hv2.id as child from hv hv1, hv hv2 
+where is_child(hv2.node, hv1.node) and is_root(hv1.node)) a, addresses b 
+where a.child = b.id;
 
 // get names and addresses of 2nd level employees
 select a.name, b.address from hv a, addresses b where a.id = b.id and level(a.node) = 2;
