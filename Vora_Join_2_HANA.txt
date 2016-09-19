@@ -28,7 +28,7 @@ show tables
 using com.sap.spark.hana
 options 
 (
-host "52.207.6.83",
+host "hana",
 instance "00",
 user "DEVUSER",
 passwd "SHALive1",
@@ -39,7 +39,7 @@ register all tables
 using com.sap.spark.hana
 options 
 (
-host "52.207.6.83",
+host "hana",
 instance "00",
 user "DEVUSER",
 passwd "SHALive1",
