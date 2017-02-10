@@ -1,0 +1,43 @@
+######################################################
+# Ya never know ; you may need to install Postgres ! #
+######################################################
+
+https://www.postgresql.org/ftp/source/v8.1.23/
+https://www.postgresql.org/docs/8.1/static/installation.html
+
+wget https://ftp.postgresql.org/pub/source/v8.1.23/postgresql-8.1.23.tar.gz
+tar -xvf postgresql-8.1.23.tar.gz
+cd postgresql-8.1.23/
+./configure --without-readline --without-zlib
+gmake
+mkdir /usr/local/pgsql/
+# chown cluster_admin /usr/local/pgsql/
+gmake install
+su - cluster_admin
+# rm -r /usr/local/pgsql/data/*
+/usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data
+/usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l logfile start
+/usr/local/pgsql/bin/createdb cluster_admin
+/usr/local/pgsql/bin/psql cluster_admin
+echo "host    all         all         0.0.0.0/0 md5" | tee -a /usr/local/pgsql/data/pg_hba.conf
+# uncomment the listen address (change localhost to *) and port in ;
+vi /usr/local/pgsql/data/postgresql.conf
+/usr/local/pgsql/bin/pg_ctl -D /usr/local/pgsql/data -l logfile restart
+
+/usr/local/pgsql/bin/psql
+create schema cluster_admin;
+create user cluster_admin with password 'bigdata';
+grant all privileges on database cluster_admin to cluster_admin;
+\c cluster_admin;
+create schema cluster_admin authorization cluster_admin;
+alter schema cluster_admin owner to cluster_admin;
+alter role cluster_admin set search_path to 'cluster_admin', 'public';
+\q
+-- install ambari
+/usr/local/pgsql/bin/psql cluster_admin cluster_admin -p 5432 -h localhost
+\c cluster_admin;
+\i /var/lib/ambari-server/resources/Ambari-DDL-Postgres-CREATE.sql;
+
+###################################################
+# Ping Bob @ hanaacademy@sap.com if any questions #
+###################################################
