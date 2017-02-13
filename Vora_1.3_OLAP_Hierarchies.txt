@@ -1,0 +1,80 @@
+################################
+# VORA TOOLS MODELLING EXAMPLE #
+################################
+
+hdfs dfs -rm /user/cluster_admin/facts.csv
+rm facts.csv
+hdfs dfs -rm /user/cluster_admin/dims.csv
+rm dims.csv
+
+echo "2,1900-1901" >> facts.csv
+echo "2,1905-1906" >> facts.csv
+echo "1,1907-1908" >> facts.csv
+echo "1,1910-1911" >> facts.csv 
+echo "2,1921-1922" >> facts.csv
+echo "2,1922-1923" >> facts.csv
+echo "3,1936-1937" >> facts.csv
+echo "2,1946-1947" >> facts.csv
+echo "1,1951-1952" >> facts.csv 
+echo "1,1955-1956" >> facts.csv 
+echo "1,1956-1957" >> facts.csv 
+echo "2,1963-1964" >> facts.csv
+echo "1,1964-1965" >> facts.csv 
+echo "2,1965-1966" >> facts.csv
+echo "1,1966-1967" >> facts.csv 
+echo "3,1967-1968" >> facts.csv
+echo "2,1972-1973" >> facts.csv
+echo "2,1975-1976" >> facts.csv
+echo "2,1976-1977" >> facts.csv
+echo "2,1978-1979" >> facts.csv
+echo "2,1979-1980" >> facts.csv
+echo "2,1981-1982" >> facts.csv
+echo "2,1982-1983" >> facts.csv
+echo "2,1983-1984" >> facts.csv
+echo "2,1985-1986" >> facts.csv
+echo "2,1987-1988" >> facts.csv
+echo "2,1989-1990" >> facts.csv
+echo "1,1992-1993" >> facts.csv 
+echo "1,1993-1994" >> facts.csv 
+echo "1,1995-1996" >> facts.csv 
+echo "1,1996-1997" >> facts.csv 
+echo "1,1998-1999" >> facts.csv 
+echo "1,1999-1900" >> facts.csv 
+echo "1,2000-2001" >> facts.csv 
+echo "1,2002-2003" >> facts.csv 
+echo "1,2006-2007" >> facts.csv 
+echo "1,2007-2008" >> facts.csv 
+echo "1,2008-2009" >> facts.csv 
+echo "1,2010-2011" >> facts.csv 
+echo "3,2011-2012" >> facts.csv
+echo "1,2012-2013" >> facts.csv
+echo "3,2013-2014" >> facts.csv
+cat facts.csv
+echo "1,United" >> dims.csv
+echo "2,Liverpool" >> dims.csv
+echo "3,City" >> dims.csv
+cat dims.csv
+
+hdfs dfs -ls /user/cluster_admin/
+hdfs dfs -put facts.csv
+hdfs dfs -put dims.csv
+hdfs dfs -ls /user/cluster_admin/
+hdfs dfs -cat /user/cluster_admin/facts.csv
+hdfs dfs -cat /user/cluster_admin/dims.csv
+
+-- In Vora Modeller
+DROP TABLE FACTS;
+CREATE TABLE FACTS (ID int, TROPHIES string)
+USING com.sap.spark.vora
+OPTIONS (tableName "FACTS",
+files "/user/cluster_admin/facts.csv");
+
+SELECT * FROM FACTS;
+
+DROP TABLE DIMS;
+CREATE TABLE DIMS (ID int, CLUB string)
+USING com.sap.spark.vora
+OPTIONS (tableName "DIMS",
+files "/user/cluster_admin/dims.csv");
+
+SELECT * FROM DIMS;
