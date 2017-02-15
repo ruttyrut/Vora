@@ -77,6 +77,14 @@ cat ~/.ssh/id_rsa
 
 cd /etc/zypp/repos.d
 sudo wget http://public-repo-1.hortonworks.com/ambari/suse11/2.x/updates/2.2.2.0/ambari.repo -O /etc/zypp/repos.d/ambari.repo
+
+############################################################################################################
+# NOTICE: Be aware, that s/w versions may change. e.g.,                                                    #
+# url for the repo is: http://public-repo-1.hortonworks.com/ambari/suse11/2.x/updates/2.4.2.0/ambari.repo  #
+# notice the change from 2.2.2.0 to 2.4.2.0                                             ↑ ↑                #
+############################################################################################################
+
+
 sudo zypper ref
 sudo zypper install ambari-server
 
